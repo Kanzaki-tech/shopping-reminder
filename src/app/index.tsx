@@ -1,3 +1,4 @@
+import { calculateDistance } from "../utils/calculateDistance";
 import * as Location from "expo-location";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { styles } from "./homeStyles";
@@ -11,6 +12,13 @@ export default function HomeScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [itemName, setItemName] = useState("");
   const [items, setItems] = useState<string[]>([]);
+  const shopLatitude = 34.7;
+  const shopLongitude = 135.5;
+
+  const distance =
+    latitude !== null && longitude !== null
+      ? calculateDistance(latitude, longitude, shopLatitude, shopLongitude)
+      : null;
   async function saveItems(newItems: string[]) {
     try {
       await AsyncStorage.setItem("shoppingItems", JSON.stringify(newItems));
@@ -106,7 +114,10 @@ export default function HomeScreen() {
       <Text>緯度：{latitude ?? "未取得"}</Text>
 
       <Text>経度：{longitude ?? "未取得"}</Text>
-
+      <Text>
+        店舗までの距離：
+        {distance !== null ? `${Math.round(distance)}m` : "未取得"}
+      </Text>
       {items.map((item, index) => (
         <View key={index} style={styles.itemRow}>
           <Text style={styles.item}>{item}</Text>
