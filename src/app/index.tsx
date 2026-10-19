@@ -1,3 +1,4 @@
+import * as Location from "expo-location";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { styles } from "./homeStyles";
 import { View, Text, TextInput, Pressable } from "react-native";
@@ -5,6 +6,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useState, useEffect } from "react";
 
 export default function HomeScreen() {
+  const [latitude, setLatitude] = useState<number | null>(null);
+  const [longitude, setLongitude] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [itemName, setItemName] = useState("");
   const [items, setItems] = useState<string[]>([]);
@@ -56,6 +59,26 @@ export default function HomeScreen() {
 
     loadItems();
   }, []);
+  async function getCurrentLocation() {
+    try {
+      // 位置情報の使用許可を求める
+      const { status } = await Location.requestForegroundPermissionsAsync();
+
+      if (status !== "granted") {
+        alert("位置情報の使用が許可されていません");
+        return;
+      }
+
+      // 現在地を取得
+      const location = await Location.getCurrentPositionAsync({});
+
+      // Stateに保存
+      setLatitude(location.coords.latitude);
+      setLongitude(location.coords.longitude);
+    } catch (error) {
+      console.error("位置情報取得エラー:", error);
+    }
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -75,6 +98,14 @@ export default function HomeScreen() {
       </View>
 
       <Text style={styles.subtitle}>買い物リスト</Text>
+
+      <Pressable style={styles.button} onPress={getCurrentLocation}>
+        <Text style={styles.buttonText}>現在地を取得</Text>
+      </Pressable>
+
+      <Text>緯度：{latitude ?? "未取得"}</Text>
+
+      <Text>経度：{longitude ?? "未取得"}</Text>
 
       {items.map((item, index) => (
         <View key={index} style={styles.itemRow}>
