@@ -45,4 +45,14 @@ export const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#eeeeee",
   },
+  itemRow: {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+},
+deleteText: {
+  color: "#ef4444",
+  fontWeight: "bold",
+  padding: 12,
+},
 });

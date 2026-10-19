@@ -15,7 +15,9 @@ export default function HomeScreen() {
     setItems([...items, itemName.trim()]);
     setItemName("");
   }
-
+  function deleteItem(index: number) {
+    setItems(items.filter((_, i) => i !== index));
+  }
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>買い物リマインダー</Text>
@@ -36,9 +38,13 @@ export default function HomeScreen() {
       <Text style={styles.subtitle}>買い物リスト</Text>
 
       {items.map((item, index) => (
-        <Text key={index} style={styles.item}>
-          {item}
-        </Text>
+        <View key={index} style={styles.itemRow}>
+          <Text style={styles.item}>{item}</Text>
+
+          <Pressable onPress={() => deleteItem(index)}>
+            <Text style={styles.deleteText}>削除</Text>
+          </Pressable>
+        </View>
       ))}
     </SafeAreaView>
   );
