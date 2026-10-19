@@ -1,10 +1,13 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { styles } from "./homeStyles";
-import { View, Text, TextInput, Pressable, StyleSheet } from "react-native";
+import { View, Text, TextInput, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState, useEffect } from "react";
 
 export default function HomeScreen() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [itemName, setItemName] = useState("");
+  const [items, setItems] = useState<string[]>([]);
   async function saveItems(newItems: string[]) {
     try {
       await AsyncStorage.setItem("shoppingItems", JSON.stringify(newItems));
@@ -21,25 +24,6 @@ export default function HomeScreen() {
     await saveItems(newItems);
   }
 
-  useEffect(() => {
-    async function loadItems() {
-      try {
-        const savedItems = await AsyncStorage.getItem("shoppingItems");
-
-        if (savedItems !== null) {
-          setItems(JSON.parse(savedItems));
-        }
-      } catch (error) {
-        console.error("読み込みエラー:", error);
-      }
-    }
-
-    loadItems();
-  }, []);
-
-  const [itemName, setItemName] = useState("");
-  const [items, setItems] = useState<string[]>([]);
-
   async function addItem() {
     const name = itemName.trim();
 
@@ -55,6 +39,24 @@ export default function HomeScreen() {
     await saveItems(newItems);
   }
 
+  useEffect(() => {
+    async function loadItems() {
+      try {
+        const savedItems = await AsyncStorage.getItem("shoppingItems");
+
+        if (savedItems !== null) {
+          setItems(JSON.parse(savedItems));
+        }
+      } catch (error) {
+        console.error("読み込みエラー:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadItems();
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>買い物リマインダー</Text>
@@ -67,7 +69,7 @@ export default function HomeScreen() {
           onChangeText={setItemName}
         />
 
-        <Pressable style={styles.button} onPress={addItem}>
+        <Pressable style={styles.button} onPress={addItem} disabled={isLoading}>
           <Text style={styles.buttonText}>追加</Text>
         </Pressable>
       </View>
@@ -78,7 +80,7 @@ export default function HomeScreen() {
         <View key={index} style={styles.itemRow}>
           <Text style={styles.item}>{item}</Text>
 
-          <Pressable onPress={() => deleteItem(index)}>
+          <Pressable onPress={() => deleteItem(index)} disabled={isLoading}>
             <Text style={styles.deleteText}>削除</Text>
           </Pressable>
         </View>
