@@ -5,6 +5,7 @@ import { styles } from "./homeStyles";
 import { View, Text, TextInput, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState, useEffect } from "react";
+import * as Notifications from "expo-notifications";
 
 export default function HomeScreen() {
   const [latitude, setLatitude] = useState<number | null>(null);
@@ -48,6 +49,16 @@ export default function HomeScreen() {
     setItemName("");
 
     await saveItems(newItems);
+  }
+  async function requestNotificationPermission() {
+    const { status } = await Notifications.requestPermissionsAsync();
+
+    if (status !== "granted") {
+      alert("通知が許可されていません");
+      return;
+    }
+
+    alert("通知が許可されました");
   }
 
   useEffect(() => {
