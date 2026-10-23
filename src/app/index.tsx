@@ -118,8 +118,8 @@ export default function HomeScreen() {
 
       <Text style={styles.subtitle}>買い物リスト</Text>
 
-      <Pressable style={styles.button} onPress={getCurrentLocation}>
-        <Text style={styles.buttonText}>現在地を取得</Text>
+      <Pressable style={styles.button} onPress={requestNotificationPermission}>
+        <Text style={styles.buttonText}>通知を許可する</Text>
       </Pressable>
 
       <Text>緯度：{latitude ?? "未取得"}</Text>
