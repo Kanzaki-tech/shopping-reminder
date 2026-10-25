@@ -124,7 +124,6 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>買い物リマインダー</Text>
-
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -137,20 +136,26 @@ export default function HomeScreen() {
           <Text style={styles.buttonText}>追加</Text>
         </Pressable>
       </View>
-
       <Text style={styles.subtitle}>買い物リスト</Text>
-
       <Pressable style={styles.button} onPress={requestNotificationPermission}>
         <Text style={styles.buttonText}>通知を許可する</Text>
       </Pressable>
-
+      <Pressable style={styles.button} onPress={sendTestNotification}>
+        <Text style={styles.buttonText}>テスト通知を送る</Text>
+      </Pressable>
+      <Pressable style={styles.button} onPress={getCurrentLocation}>
+        <Text style={styles.buttonText}>現在地を取得</Text>
+      </Pressable>
       <Text>緯度：{latitude ?? "未取得"}</Text>
-
       <Text>経度：{longitude ?? "未取得"}</Text>
       <Text>
         店舗までの距離：
         {distance !== null ? `${Math.round(distance)}m` : "未取得"}
       </Text>
+      <Pressable style={styles.button} onPress={getCurrentLocation}>
+        <Text style={styles.buttonText}>現在地を取得</Text>
+      </Pressable>
+      ;
       {items.map((item, index) => (
         <View key={index} style={styles.itemRow}>
           <Text style={styles.item}>{item}</Text>
