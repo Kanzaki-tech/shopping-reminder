@@ -69,6 +69,20 @@ export default function HomeScreen() {
     alert("通知が許可されました");
   }
 
+  async function sendTestNotification() {
+    try {
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "買い物リマインダー",
+          body: "牛乳を買い忘れていませんか？",
+        },
+        trigger: null,
+      });
+    } catch (error) {
+      console.error("通知エラー:", error);
+    }
+  }
+
   useEffect(() => {
     async function loadItems() {
       try {
